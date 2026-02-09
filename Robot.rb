@@ -1,6 +1,6 @@
 class Robot
   name = ""
-  number = "0000"
+  number = 0000
   matches = []
   opr = 0.0
   excpectedscore = 0.0
