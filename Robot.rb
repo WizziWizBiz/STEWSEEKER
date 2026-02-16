@@ -3,10 +3,10 @@ class Robot
   number = 0000
   matches = []
   opr = 0.0
-  excpectedscore = 0.0
-  autoscore = 0.0
-  telescore = 0.0
-  endgamescore = 0.0
+  expectedScore = 0.0
+  autoScore = 0.0
+  teleScore = 0.0
+  endgameScore = 0.0
 
   def initialize(number, name = "")
     @number = number
@@ -15,6 +15,11 @@ class Robot
     else
       @name = name
     end
+    @matches = []
+    @expectedScore = 0.0
+    @autoScore = 0.0
+    @teleScore = 0.0
+    @endgameScore = 0.0
   end
 
   def matches
@@ -40,28 +45,23 @@ class Robot
     matchesSize = @matches.size
     newMatch = @matches[matchesSize-1]
 
-    if @matchesSize < 2
-      return #only one element, no sorting needed
-    
-    
-    (matchesSize-2).downto(0) do |i| #loop from second-to-last index to first index
-      if @matches[i] == @matches[i+1]
-        @matches.delete_at(i+1) #duplicate added, remove it
-        return -1
-      elsif @matches[i] > @matches[i+1]
-        @matches[i], @matches[i+1] = @matches[i+1], @matches[i] # swap elements
-      else
-        return 0 # in correct place in the list
+    if matchesSize < 2
+      return 0 #only one element, no sorting needed
+    else
+      (matchesSize-2).downto(0) do |i| #loop from second-to-last index to first index
+        if @matches[i] == @matches[i+1]
+          @matches.delete_at(i+1) #duplicate added, remove it
+          return -1 #TODO: raise error
+        elsif @matches[i] > @matches[i+1]
+          @matches[i], @matches[i+1] = @matches[i+1], @matches[i] # swap elements
+        else
+          return 0 # in correct place in the list
+        end
       end
-    end
-
-    return 0 # item had to be put in the front of the list
+      return 0 # item had to be put in the front of the list
   end end
 
-  # returns opr
-  def opr
-    @opr
-  end
+  attr_reader :name, :number, :matches, :opr, :expectedScore, :autoScore, :teleScore, :endgameScore
 
   #sets opr to new value
   def opr=(newOpr)
@@ -73,57 +73,27 @@ class Robot
     @opr = 0.0
   end 
 
-  # returns expected score
-  def expectedScore
-    @excpectedscore
-  end
-
   # sets total expected score based on subcomponents
   private def setExpectedScore
-    @excpectedscore = @autoscore + @telescore + @endgamescore
-  end
-
-  # returns auto score
-  def autoScore
-    @autoscore
+    @expectedScore = @autoScore + @teleScore + @endgameScore
   end
 
   # sets autonomous period score and updates total
   def autoScore=(newAutoScore)
-    @autoscore = newAutoScore
+    @autoScore = newAutoScore
     setExpectedScore
-  end
-
-  # returns teleop score
-  def teleScore
-    @telescore
   end
 
   # sets teleop period score and updates total
   def teleScore=(newTeleScore)
-    @telescore = newTeleScore
+    @teleScore = newTeleScore
     setExpectedScore
-  end
-
-  # returns endgame score
-  def endgameScore
-    @endgamescore
   end
 
   # sets engame score and updates total
   def endgameScore=(newEndScore)
-    @endgamescore = newEndScore
+    @endgameScore = newEndScore
     setExpectedScore
-  end
-
-  # returns team name
-  def name
-    @name
-  end
-
-  # returns team number
-  def number
-    @number
   end
 
 end
