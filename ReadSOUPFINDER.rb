@@ -7,9 +7,9 @@ def parseTestData
     CSV.foreach("SOUPFINDER_Test_Data.csv", headers: true) do |row|
         number = row["team #"].to_i
         teams[i] = Robot.new(number)
-        teams[i].autoScore = row["auto"].to_i
-        teams[i].teleScore = row["tele"].to_i
-        teams[i].endgameScore = row["endgame"].to_i
+        teams[i].autoScore = row["auto"].to_f.round(2)
+        teams[i].teleScore = row["tele"].to_f.round(2)
+        teams[i].endgameScore = row["endgame"].to_f.round(2)
         i += 1
     end
     return teams

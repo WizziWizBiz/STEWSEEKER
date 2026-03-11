@@ -1,7 +1,7 @@
 require_relative 'Robot'
 require_relative 'RADIXSort'
 require_relative 'ReadSOUPFINDER'
-
+'''
 team2823 = Robot.new(2823, "The Automatons")
 team2491 = Robot.new(2491, "No Mythic")
 teams = [team2823, team2491]
@@ -15,6 +15,7 @@ teamsOpr = radix(teams, :opr)
 teamsOpr.each do |team|
   puts (team.name + ": " + team.opr.to_s)
 end  
+'''
 
 teams = parseTestData
 teams.each do |team|
