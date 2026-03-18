@@ -5,26 +5,20 @@ def radix(teams, metric, descending = true)
     [team, (100 * (team.send(metric) || 0)).floor]
   end
 
-
   #SORTING
   # initialize buckets and begin with all elements in first bucket
   digit = 0
   while digit < 5
     buckets = Array.new(10) { [] }
-    # for every element in every bucket
+    # for every element
     teamsWithMetric.each do |element|
       # extract current digit and put element in corresponding bucket
       currDigit = (element[1] / (10 ** digit)) % 10
       buckets[currDigit] << element
     end
     
-    # update list for next loop iteration
-    teamsWithMetric = []
-    buckets.each do |bucket|
-      bucket.each do |element|
-        teamsWithMetric << element
-      end
-    end
+    # update list and digit for next loop iteration
+    teamsWithMetric = buckets.flatten(1)
     digit = digit + 1
   end  
 
@@ -40,8 +34,11 @@ def radix(teams, metric, descending = true)
       end
     end
   end
+  
+  # putting return in correct order
   if descending
     sortedTeams.reverse!
   end
   return sortedTeams
+
 end
