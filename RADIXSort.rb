@@ -2,13 +2,14 @@ require_relative 'Robot'
 def radix(teams, metric, descending = true) 
   #INITITALIZATION
   teamsWithMetric = teams.map do |team|
+    # The "|| 0" and ".floor" are redundant error handling mechanisms, once I flesh out more of the program I'll be able to safely remove those
     [team, (100 * (team.send(metric) || 0)).floor]
   end
 
   #SORTING
   # initialize buckets and begin with all elements in first bucket
   digit = 0
-  while digit < 5
+  while digit < 6
     buckets = Array.new(10) { [] }
     # for every element
     teamsWithMetric.each do |element|
