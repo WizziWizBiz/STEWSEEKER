@@ -9,7 +9,7 @@ def radix(teams, metric, descending = true)
   #SORTING
   # initialize buckets and begin with all elements in first bucket
   digit = 0
-  while digit < 6
+  while digit < 7
     buckets = Array.new(10) { [] }
     # for every element
     teamsWithMetric.each do |element|
