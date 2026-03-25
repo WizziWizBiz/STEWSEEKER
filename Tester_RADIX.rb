@@ -18,9 +18,9 @@ end
 '''
 
 teams = parseTestData
-teams.each do |team|
-  puts(team.number)
-end
+#teams.each do |team|
+  #puts(team.number)
+#end
 puts "----- TELE SCORE -----"
 teamsTele = radix(teams, :teleScore)
 teamsTele.each do |team|
