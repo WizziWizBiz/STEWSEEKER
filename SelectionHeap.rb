@@ -2,7 +2,7 @@ require_relative "Robot"
 require "Hash"
 
 # Exception for attempting to remove a team that doesn't exist
-class NodeDoesntExist < StandardError
+class NodeError < StandardError
 end
 
 class HeapNode
@@ -68,8 +68,9 @@ class SelectionHeap
   def hashMapRemove(number)
     ret = Hash.delete(number) # will return the node that corresponds to the number if found, or nil if not found
     if (ret == nil)
-      raise NodeDoesntExist, "Team with number #{number} not found in the heap"
+      raise NodeError, "Team with number #{number} not found in the heap"
     else return ret
+    end
   end
   
   # Helper to remove node from heap after getting it from the hash table. 
@@ -77,15 +78,85 @@ class SelectionHeap
     return nil
   end  
 
-  # reheapification for adding the given node
+  # given a parent node and its child, swaps their position within the heap
+  def swapNodes(par, child):
+    # find if child is the left or right child
+    if par.left == child
+      isLeft = true
+    elsif par.right == child
+      isLeft = false
+    else
+      raise NodeError, "SWAPNODES expected (parent, child) but did not get a parent and child"
+    end
+
+    # check if parent is the root node
+    if heapRoot != par
+      child.parent = par.parent
+    else
+      @heapRoot = child
+    end
+
+    # Manage swap based on leftness or rightness
+    if isLeft
+      cRight = child.right
+      child.right = par.right
+      par.left = child.left
+      par.right = cRight
+      child.left = par
+    else
+      cLeft = child.left
+      child.left = par.left
+      par.left = cLeft
+      par.right = child.right
+      child.right = par
+    end
+
+    par.parent = child
+  end
+
+  # reheapification for adding the given node. Node already placed within tree, it just needs to be moved.
   def reheapifyUp(node)
+    # Node has been added somewhere in the heap
+    if node != @heapRoot
+      if node.score > node.parent.score
+        swapNodes(node.parent, node)
+        reheapifyUp(node)
+      end
+    end
     return nil
   end
 
-  #reheapification for removing the given node
+  #reheapification for removing the given node. The removed node is already gone, this rearranges after putting new node in "root"
   def reheapifyDown(node)
+    if (node.left != nil) && (node.right != nil)
+      # both children exist, find max between them and test for swap
+      maxScore = max(node.left.score, node.right.score)
+      if node.score < maxScore
+        if maxScore == node.left.score
+          swapTarg = node.left
+        else
+          swapTarg = node.right
+        end
+        swapNodes(node, swapTarg)
+        reheapifyDown(node)
+      end
+    elsif node.left != nil
+      # only left child exists, test it for swap
+      if node.score < node.left.score
+        swapNodes(node, node.left)
+        reheapifyDown(node)
+      end
+    elsif node.right != nil
+      # only right cild exists, test it for swap
+      if node.score < node.right.score
+        swapNodes(node, node.right)
+        reheapifyDown(node)
+      end
+    end
+    # either no swap is needed or a node is a leaf
     return nil
   end
+
   end
 
 end
