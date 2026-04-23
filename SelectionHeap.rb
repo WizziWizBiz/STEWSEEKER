@@ -1,5 +1,4 @@
 require_relative "Robot"
-require "Hash"
 
 # Exception for attempting to remove a team that doesn't exist
 class NodeError < StandardError
@@ -48,7 +47,7 @@ class SelectionHeap
 
   # returns the team and score at the top of the heap as a tuple. returns nil if the heap is empty
   def peek()
-    (heapRoot == nil) ? (return nil) : (return (heapRoot.team, heapRoot.score))
+    (@heapRoot == nil) ? (return nil) : (return [@heapRoot.team, @heapRoot.score])
   end
 
   private
@@ -79,7 +78,7 @@ class SelectionHeap
   end  
 
   # given a parent node and its child, swaps their position within the heap
-  def swapNodes(par, child):
+  def swapNodes(par, child)
     # find if child is the left or right child
     if par.left == child
       isLeft = true
@@ -155,8 +154,6 @@ class SelectionHeap
     end
     # either no swap is needed or a node is a leaf
     return nil
-  end
-
   end
 
 end
