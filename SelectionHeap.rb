@@ -47,7 +47,7 @@ class SelectionHeap
 
   # returns the team and score at the top of the heap as a tuple. returns nil if the heap is empty
   def peek()
-    (@heapRoot == nil) ? (return nil) : (return [@heapRoot.team, @heapRoot.score])
+    (@heapRoot == nil) ? (return nil) : (return [@heapRoot.bot, @heapRoot.score])
   end
 
   private
