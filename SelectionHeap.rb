@@ -37,7 +37,7 @@ class SelectionHeap
     # Try to remove node from hash table
     begin
       node = hashMapRemove(number)
-    rescue NodeDoesntExist => e
+    rescue NodeError => e
       puts "#{e.message}"
       return nil
     end
@@ -51,16 +51,14 @@ class SelectionHeap
   end
 
   private
-  # Given a team number, finds the corresponding node in the hash map and returns it. returns nil if not found
-  # I think this is redundant? may be removed later
-  def lookup(number)
-    return @hashmap[number]
-  end
 
   # adds a node to the hash map and heap
   def addNode(node)
     @hashmap[node.robot.number] = node
     # TODO: add to heap itself
+    # find place that maintains completeness (ruh roh)
+    # put it there
+    # reheapify up from node
   end
 
   # helper function to handle removing things from the hashmap
@@ -74,6 +72,10 @@ class SelectionHeap
   
   # Helper to remove node from heap after getting it from the hash table. 
   def heapRemove(node)
+    # find leaf - do I have to track depth now or completely redo this to be an array?
+    # swap node and leaf
+    # delete node since its now a leaf
+    # reheapifyDown from leaf that got swapped in for node
     return nil
   end  
 
@@ -89,10 +91,10 @@ class SelectionHeap
     end
 
     # check if parent is the root node
-    if heapRoot != par
-      child.parent = par.parent
-    else
+    if heapRoot == par
       @heapRoot = child
+    else
+      child.parent = par.parent
     end
 
     # Manage swap based on leftness or rightness
@@ -111,6 +113,7 @@ class SelectionHeap
     end
 
     par.parent = child
+    return nil
   end
 
   # reheapification for adding the given node. Node already placed within tree, it just needs to be moved.
