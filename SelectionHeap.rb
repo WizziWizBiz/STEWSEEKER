@@ -20,7 +20,7 @@ class SelectionHeap
   
   hashmap = Hash.new
   # heap is now level-order array
-  heap = nil
+  heap = [nil]
   metric = nil
   
   #metric to organize the heap by and teams (sorted by number?) are expected to create the heap from
