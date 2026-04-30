@@ -55,6 +55,7 @@ class SelectionHeap
 
   # adds a node to the hash map and heap
   def addNode(node, numOthers)
+    node.index = numOthers # corresponds to place in array
     # Add to hash map
     @hashmap[node.bot.number] = node
     # Special case for first node in heap
