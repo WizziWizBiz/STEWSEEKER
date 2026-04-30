@@ -17,16 +17,11 @@ class HeapNode
 end
 
 class SelectionHeap
-  
-  hashmap = Hash.new
-  # heap is now level-order array
-  heap = [nil]
-  metric = nil
-  
   #metric to organize the heap by and teams (sorted by number?) are expected to create the heap from
   def initialize(teams, metric)
+    @hashmap = {}
     @metric = metric
-    heap = Array.new(1)
+    @heap = []
     teams.each_index do |teamsAlready|
       node = HeapNode.new(teams[teamsAlready], @metric) 
       addNode(node, teamsAlready)
@@ -48,31 +43,25 @@ class SelectionHeap
 
   # returns the team and score at the top of the heap as a tuple. returns nil if the heap is empty
   def peek()
-    (@heap[0] == nil) ? (return nil) : (return [@heap[0].team, @heap[0].score])
+    (@heap[0] == nil) ? (return nil) : (return [@heap[0].bot.number, @heap[0].score])
   end
-
-  private
 
   # adds a node to the hash map and heap
   def addNode(node, numOthers)
     node.index = numOthers # corresponds to place in array
     # Add to hash map
     @hashmap[node.bot.number] = node
-    # Special case for first node in heap
-    if (@heap[0] == nil)
-      @heap[0] = node
-    else
-      @heap << node
-      reheapifyUp()
-    end
-  end
+    @heap << node
+    reheapifyUp(numOthers)
 
+  end
   # helper function to handle removing things from the hashmap
   def hashMapRemove(number)
-    ret = Hash.delete(number) # will return the node that corresponds to the number if found, or nil if not found
+    ret = @hashmap.delete(number) # will return the node that corresponds to the number if found, or nil if not found
     if (ret == nil)
       raise NodeDoesntExist, "Team with number #{number} not found in the heap"
     else return ret
+    end
   end
   
   # Helper to remove node from heap after getting it from the hash table. Returns (bot, score) of removed node 
@@ -87,7 +76,7 @@ class SelectionHeap
       @heap << nil
     end
 
-    return [removedNode.team, removedNode.score]
+    return [removedNode.bot.number, removedNode.score]
   end  
 
   # Helper to swap the position of two nodes within the heap
@@ -103,11 +92,9 @@ class SelectionHeap
       @heap[iOne], @heap[iTwo] = @heap[iTwo], @heap[iOne]
     end
   end
-   
 
   # reheapification for adding the given node (assumes >=2 nodes in heap)
-  def reheapifyUp()
-    index = -1
+  def reheapifyUp(index)
     parentIndex = (index - 1) / 2
     if (@heap[index].score > @heap[parentIndex].score)
       heapSwap(index, parentIndex)
@@ -120,40 +107,21 @@ class SelectionHeap
 
   #reheapification for removing the given node
   def reheapifyDown(index)
-    # Check for no children
-    begin
-      leftIndex = 2 * index + 1
-    rescue IndexError => e
-      return nil
-    end
+    leftIndex = 2 * index + 1
+    rightIndex = 2 * index + 2
+    max = index
 
-    # Check for only left child
-    begin
-      rightIndex = 2 * index + 2
-    rescue IndexError => e
-      if (@heap[index].score > @heap[leftIndex].score)
-        heapSwap(index, leftIndex)
-        # no other swap will be needed because it's a complete tree
-      end
-      return nil
-    end
-
-    # find maximum child score
-    if (@heap[leftIndex].score > @heap[rightIndex].score)
+    if leftIndex < @heap.length && @heap[leftIndex].score > @heap[max].score
       max = leftIndex
-    else
+    end
+
+    if rightIndex < @heap.length && @heap[rightIndex].score > @heap[max].score
       max = rightIndex
     end
 
-    # check if swap is needed, recursive call to keep restoring tree
-    if (@heap[index].score > @heap[max].score)
-      heapSwap(index, leftIndex)
+    if index != max
+      heapSwap(index, max)
       reheapifyDown(max)
-    else
-      return nil
     end
-
   end
-  end
-
 end
